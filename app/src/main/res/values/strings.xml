@@ -2,15 +2,15 @@
     <string name="app_name">Android53</string>
 
     <string-array name="albums_array">
-        <item>Album0</item>
-        <item>Album1</item>
-        <item>Album2</item>
-        <item>Album3</item>
-        <item>Album4</item>
-        <item>Album5</item>
-        <item>Album6</item>
-        <item>Album7</item>
-        <item>Album8</item>
-        <item>Album9</item>
+        <item>California</item>
+        <item>Paris</item>
+        <item>Freshman Year</item>
+        <item>Kevin\&apos;s Wedding</item>
+        <item>Bethany Beach \&apos;15</item>
+        <item>Bethany Beach \&apos;16</item>
+        <item>Sophomore Year</item>
+        <item>Junior Year</item>
+        <item>High School Graduation</item>
+        <item>Cat Photos</item>
     </string-array>
 </resources>

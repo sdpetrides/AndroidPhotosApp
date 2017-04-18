@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.softwaremeth.group53.android53.AlbumsView"
+    android:id="@+id/gridview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnWidth="120dp"
+    android:numColumns="auto_fit"
+    android:verticalSpacing="10dp"
+    android:horizontalSpacing="10dp"
+    android:stretchMode="columnWidth"
+    android:gravity="center" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/albumName"
+        android:background="#bbbbbb"
+        android:textColor="#ffffff"
+        android:padding="10dp" />
+
+</GridView-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.softwaremeth.group53.android53.AlbumsView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/albumName"
+        android:background="#bbbbbb"
+        android:textColor="#ffffff"
+        android:padding="10dp" />
+
+    <!--TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/photosName"
+        android:padding="10dp"
+        android:textColor="#ffffff"
+        android:background="#000000"/-->
+
+</LinearLayout>
