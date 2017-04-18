@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Android53</string>
+
+    <string-array name="albums_array">
+        <item>Album0</item>
+        <item>Album1</item>
+        <item>Album2</item>
+        <item>Album3</item>
+        <item>Album4</item>
+        <item>Album5</item>
+        <item>Album6</item>
+        <item>Album7</item>
+        <item>Album8</item>
+        <item>Album9</item>
+    </string-array>
 </resources>
