@@ -1,17 +1,3 @@
 <resources>
     <string name="app_name">Android53</string>
-
-    <string-array name="albums_array">
-        <item>California</item>
-        <item>Paris</item>
-        <item>Freshman Year</item>
-        <item>Kevin\&apos;s Wedding</item>
-        <item>Bethany Beach \&apos;15</item>
-        <item>Bethany Beach \&apos;16</item>
-        <item>Sophomore Year</item>
-        <item>Junior Year</item>
-        <item>High School Graduation</item>
-        <item>Cat Photos</item>
-    </string-array>
-
 </resources>

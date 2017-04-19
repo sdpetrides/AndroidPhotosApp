@@ -7,10 +7,12 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import java.io.BufferedReader;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
@@ -60,36 +62,52 @@ public class ImageAdapter extends BaseAdapter {
         return mThumbIds.get(position);
     }
 
-    /* references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-    };
-    */
+    // references to our images
+    // private Integer[] mThumbIds = { R.drawable.sample_0 };
 
     private void initThumbIds(String album_name) {
 
-        InputStream is = mContext.getResources().openRawResource(R.raw.photo_names);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String jsonRaw = null;
 
-        // fill arraylist with photo identifiers
         try {
-            while (true) {
-                String line = br.readLine();
-                if (line == null) {
-                    continue;
-                } else if (line.equals(album_name)) {
-                    line = br.readLine();
-                    Integer i = mContext.getResources().getIdentifier(line, "drawable", mContext.getPackageName());
-                    if (i == 0) {
-                        break;
+            InputStream is = mContext.getAssets().open("album.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            jsonRaw = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
+
+        JSONObject jObject = null;
+        JSONArray jAlbumNameArray = null;
+        JSONArray jPhotoIdArray = null;
+
+        try {
+
+            jObject = new JSONObject(jsonRaw);
+            jAlbumNameArray = jObject.getJSONArray("albumNames");
+
+            for (int i = 0; i < jAlbumNameArray.length(); i++) {
+
+                if (jAlbumNameArray.getJSONObject(i).get("name").equals(album_name)) {
+
+                    jPhotoIdArray = (JSONArray) jAlbumNameArray.getJSONObject(i).get("photoIds");
+                    for (int j = 0; j < jPhotoIdArray.length(); j++) {
+
+                        String photoIdString = (String) jPhotoIdArray.get(j);
+                        Integer k = mContext.getResources().getIdentifier(
+                                photoIdString, "drawable", mContext.getPackageName());
+                        mThumbIds.add(k);
                     }
-                    mThumbIds.add(i);
                     break;
                 }
             }
-        } catch (IOException e) {}
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
