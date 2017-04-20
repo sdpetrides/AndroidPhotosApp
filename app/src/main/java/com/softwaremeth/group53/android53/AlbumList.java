@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,10 +49,10 @@ public class AlbumList extends AppCompatActivity {
         albumNames = getAlbumNames();
 
         // populate listView with albumNames
-        adapter =
-                new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
+        adapter = new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
         listView.setAdapter(adapter);
 
+        // set context menu for listView items
         registerForContextMenu(listView);
 
         // set listener to load album view
@@ -63,6 +64,33 @@ public class AlbumList extends AppCompatActivity {
         });
 
     }
+
+    /* OPTIONS MENU */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.album_list_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                System.out.println("Add album button pressed");
+                if (!addAlbum()) {
+                    // handle user error
+                }
+                return true;
+            case R.id.action_search:
+                System.out.println("Search button pressed");
+                loadSearchView();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /* CONTEXT MENU */
 
     @Override
     public void onCreateContextMenu(
@@ -78,7 +106,9 @@ public class AlbumList extends AppCompatActivity {
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.rename:
-                renameAlbum(info.id);
+                if (!renameAlbum(info.id)) {
+                    // handle user error
+                }
                 return true;
             case R.id.delete:
                 deleteAlbum(info.id);
@@ -88,23 +118,7 @@ public class AlbumList extends AppCompatActivity {
         }
     }
 
-    private void renameAlbum(long id) {
-
-        // modify JSON
-
-        // modify listView
-
-        adapter.notifyDataSetChanged();
-    }
-
-    private void deleteAlbum(long id) {
-
-        // modify JSON
-
-        // modify listView
-
-        adapter.notifyDataSetChanged();
-    }
+    /* MANAGE ALBUM NAMES */
 
     private String[] getAlbumNames() {
         String jsonRaw = null;
@@ -120,8 +134,6 @@ public class AlbumList extends AppCompatActivity {
             return null;
         }
 
-        // System.out.println(jsonRaw);
-
         JSONObject jObject = null;
         JSONArray jArray = null;
         String[] albumNames = null;
@@ -136,7 +148,6 @@ public class AlbumList extends AppCompatActivity {
 
             for (int i = 0; i < jArray.length(); i++) {
                 albumNames[i] = (String) jArray.getJSONObject(i).get("name");
-                // System.out.println();
             }
 
         } catch (JSONException e) {
@@ -152,8 +163,34 @@ public class AlbumList extends AppCompatActivity {
 
     private void setAlbumNames(String[] albumNames) {
 
-
     }
+
+    private boolean addAlbum() {
+        return true;
+    }
+
+    private boolean renameAlbum(long id) {
+
+        // modify JSON
+
+        // modify/refresh listView
+
+        adapter.notifyDataSetChanged();
+
+        return true;
+    }
+
+    private void deleteAlbum(long id) {
+
+        // modify JSON
+
+        // modify/refresh listView
+
+        adapter.notifyDataSetChanged();
+    }
+
+
+    /* CHANGE ACTIVITIES */
 
     private void loadAlbumView(int pos) {
 
@@ -170,5 +207,9 @@ public class AlbumList extends AppCompatActivity {
         // start AlbumView activity
         startActivity(intent);
     };
+
+    private void loadSearchView() {
+
+    }
 
 }

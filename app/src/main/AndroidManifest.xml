@@ -15,7 +15,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AlbumView" />
+        <activity android:name=".AlbumView"
+            android:parentActivityName=".AlbumList">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AlbumList">
+            </meta-data>
+        </activity>
+        <activity android:name=".SearchPhotos"
+            android:parentActivityName=".AlbumList">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AlbumList">
+            </meta-data>
+            <meta-data android:name="android.app.searchable"
+            android:resource="@xml/searchable"/>
+        </activity>
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     </application>
 

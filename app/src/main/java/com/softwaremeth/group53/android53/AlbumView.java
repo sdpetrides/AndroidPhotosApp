@@ -4,6 +4,9 @@ package com.softwaremeth.group53.android53;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,7 +14,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class AlbumView extends Activity {
+public class AlbumView extends AppCompatActivity {
 
     private ArrayList<String> albumPhotoNames;
 
@@ -26,6 +29,15 @@ public class AlbumView extends Activity {
         // get the name and detail from bundle
         Bundle bundle = getIntent().getExtras();
         String albumName = bundle.getString(AlbumList.ALBUM_NAME_KEY);
+
+        //
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle(albumName);
+        this.setSupportActionBar(toolbar);
+
+        //
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         // get gridView and set image adapter
         myImgAdapter = new ImageAdapter(this, albumName);
@@ -52,13 +64,6 @@ public class AlbumView extends Activity {
             // myImgAdapter.add(file.getAbsolutePath());
         }
         */
-
-        // get the name and detail view objects
-        TextView albumNameTextView = (TextView)findViewById(R.id.albumName);
-
-        // set name and detail on the views
-        albumNameTextView.setText(albumName);
-
     }
 
 }
