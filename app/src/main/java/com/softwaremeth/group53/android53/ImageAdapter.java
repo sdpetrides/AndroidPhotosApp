@@ -1,6 +1,11 @@
 package com.softwaremeth.group53.android53;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,6 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,11 +26,11 @@ public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private ArrayList<Integer> mThumbIds;
+    private ArrayList<String> mThumbIds;
 
     public ImageAdapter(Context c, String album_name) {
         mContext = c;
-        mThumbIds = new ArrayList<Integer>();
+        mThumbIds = new ArrayList<String>();
         initThumbIds(album_name);
     }
 
@@ -54,12 +61,54 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds.get(position));
-        return imageView;
-    }
+        /*
+        String ExternalStorageDirectoryPath = Environment
+                .getExternalStorageDirectory()
+                .getAbsolutePath();
 
-    public int getImgId(int position) {
-        return mThumbIds.get(position);
+        String targetPath = ExternalStorageDirectoryPath + "/DCIM/Camera/";
+
+        File targetDirectory = new File(targetPath);
+
+        File[] files = targetDirectory.listFiles();
+
+        System.out.println(targetDirectory.toString());
+
+        for (File file : files){
+            System.out.println(file.toString());
+            // myImgAdapter.add(file.getAbsolutePath());
+        }
+        */
+
+        /*
+        Bitmap bitmap;
+        bitmap = BitmapFactory.decodeFile(mThumbIds.get(position));
+        imageView.setImageBitmap(bitmap);
+        */
+
+
+        // imageView.setImageResource(mThumbIds.get(position));
+
+        // imageView.setImageResource(R.drawable.sample_0);
+
+        // imageView = (ImageView)findViewById(R.id.image);
+
+        /*
+        System.out.println("Before getFileStreamPath");
+
+        File filePath = mContext.getFileStreamPath("IMG_20170421_123445.jpg");
+
+        System.out.println("After getFileStreamPath");
+
+        System.out.println("Before setImageDrawable");
+
+        imageView.setImageDrawable(Drawable.createFromPath(filePath.toString()));
+
+        System.out.println("Before setImageDrawable");
+
+        */
+
+        return imageView;
     }
 
     // references to our images
@@ -96,11 +145,8 @@ public class ImageAdapter extends BaseAdapter {
 
                     jPhotoIdArray = (JSONArray) jAlbumNameArray.getJSONObject(i).get("photoIds");
                     for (int j = 0; j < jPhotoIdArray.length(); j++) {
-
-                        String photoIdString = (String) jPhotoIdArray.get(j);
-                        Integer k = mContext.getResources().getIdentifier(
-                                photoIdString, "drawable", mContext.getPackageName());
-                        mThumbIds.add(k);
+                        // System.out.println((String) jPhotoIdArray.get(j));
+                        mThumbIds.add((String) jPhotoIdArray.get(j));
                     }
                     break;
                 }

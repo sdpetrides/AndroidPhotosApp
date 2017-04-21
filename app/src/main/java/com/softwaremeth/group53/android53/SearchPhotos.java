@@ -139,8 +139,6 @@ public class SearchPhotos extends AppCompatActivity {
 
         System.out.println(photoNames[1]);
 
-
-
         return photoNames;
     }
 
