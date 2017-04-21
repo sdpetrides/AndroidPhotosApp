@@ -5,10 +5,6 @@
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/action_search"
-        appcompat:showAsAction="always" />
-    <item
-        android:id="@+id/action_add"
-        android:icon="@drawable/ic_add_black_24dp"
-        android:title="@string/action_add_album"
-        appcompat:showAsAction="always" />
+        appcompat:showAsAction="collapseActionView|always"
+        appcompat:actionViewClass="android.support.v7.widget.SearchView" />
 </menu>

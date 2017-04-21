@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.softwaremeth.group53.android53.AlbumView"
+    tools:context="com.softwaremeth.group53.android53.SearchPhotos"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,7 +16,12 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <GridView
+    <ListView
+        android:id="@+id/albums_list"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
+
+    <!--GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,6 +30,6 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center" />
+        android:gravity="center" /-->
 
 </LinearLayout>

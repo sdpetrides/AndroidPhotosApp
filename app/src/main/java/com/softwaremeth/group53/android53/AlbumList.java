@@ -210,6 +210,16 @@ public class AlbumList extends AppCompatActivity {
 
     private void loadSearchView() {
 
+        // create bundle
+        Bundle bundle = new Bundle();
+
+        // create intent and add bundle
+        Intent intent = new Intent(this, SearchPhotos.class);
+        intent.putExtras(bundle);
+
+        // start AlbumView activity
+        startActivity(intent);
+
     }
 
 }
