@@ -32,15 +32,16 @@ import java.io.InputStream;
 
 public class AlbumList extends AppCompatActivity {
 
-    private ListView listView;
-    private String[] albumNames;
-    private String[] arrPath;
+    private static final int EDIT_MOVIE_CODE = 1;
+    public static final String ALBUM_NAME_KEY = "album_name";
+    public static boolean isAddNotRename;
+    private int renameId;
 
+    private ListView listView;
     ArrayAdapter<String> adapter;
 
+    private String[] albumNames;
     myJSON myJson;
-
-    public static final String ALBUM_NAME_KEY = "album_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +49,12 @@ public class AlbumList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_list);
 
+        // get myJson object
         myJson = new myJSON(this, "album_4.json");
 
-        // getImageFilePaths();
-
+        // initialize toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Albums");
         this.setSupportActionBar(toolbar);
 
         // get listView
@@ -86,7 +88,7 @@ public class AlbumList extends AppCompatActivity {
     }
 
     /* GET IMAGE FILEPATHS */
-
+    /*
     private void getImageFilePaths() {
 
         final String[] columns = { MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID };
@@ -115,6 +117,7 @@ public class AlbumList extends AppCompatActivity {
             Log.i("PATH", arrPath[i]);
         }
     }
+    */
 
     /* OPTIONS MENU */
 
@@ -128,13 +131,10 @@ public class AlbumList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                System.out.println("Add album button pressed");
-                if (!addAlbum()) {
-                    // handle user error
-                }
+                isAddNotRename = true;
+                loadAddRenameAlbum(-1);
                 return true;
             case R.id.action_search:
-                System.out.println("Search button pressed");
                 loadSearchView();
             default:
                 return super.onOptionsItemSelected(item);
@@ -157,9 +157,9 @@ public class AlbumList extends AppCompatActivity {
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.rename:
-                if (!renameAlbum(info.id)) {
-                    // handle user error
-                }
+                isAddNotRename = false;
+                renameId = (int)info.id;
+                loadAddRenameAlbum((int)info.id);
                 return true;
             case R.id.delete:
                 deleteAlbum(info.id);
@@ -169,9 +169,29 @@ public class AlbumList extends AppCompatActivity {
         }
     }
 
+    /* MANAGE ADD/RENAME ACTIVITY */
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+
+        if (resultCode != RESULT_OK) { return; }
+
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) { return; }
+
+        String newAlbumName = bundle.getString(AddRenameAlbum.ALBUM_NAME);
+
+        if (isAddNotRename) {
+            addAlbum(newAlbumName);
+        } else {
+            renameAlbum(newAlbumName, renameId);
+        }
+
+    }
+
     /* MANAGE ALBUMS */
 
-    private boolean addAlbum() {
+    private boolean addAlbum(String newAlbumName) {
 
         JSONObject jObject = myJson.getJSONObject();
         JSONArray jArray = null;
@@ -181,7 +201,7 @@ public class AlbumList extends AppCompatActivity {
             return false;
         }
 
-        String strTemp = "{\"name\":\"NewAlbum\", \"photoIds\":\"[]\"}";
+        String strTemp = "{\"name\":\"" + newAlbumName + "\", \"photoIds\":\"[]\"}";
 
         // System.out.println("strTemp: " + strTemp);
 
@@ -216,7 +236,7 @@ public class AlbumList extends AppCompatActivity {
         return true;
     }
 
-    private boolean renameAlbum(long id) {
+    private boolean renameAlbum(String newAlbumName, long id) {
 
         JSONObject jObject = myJson.getJSONObject();
         JSONArray jArray = null;
@@ -228,7 +248,7 @@ public class AlbumList extends AppCompatActivity {
         try {
             jArray = jObject.getJSONArray("albumNames");
             JSONObject jObjectTemp = jArray.getJSONObject((int) id);
-            jObjectTemp.putOpt("name", "New Name");
+            jObjectTemp.putOpt("name", newAlbumName);
             jObject.remove("albumNames");
             jObject.put("albumNames", jArray);
         } catch (JSONException e) {}
@@ -312,6 +332,26 @@ public class AlbumList extends AppCompatActivity {
         startActivity(intent);
     };
 
+    private void loadAddRenameAlbum(int pos) {
+
+        // create bundle
+        Bundle bundle = new Bundle();
+
+        // put album name in the bundle
+        if (isAddNotRename) {
+            bundle.putString(AddRenameAlbum.ALBUM_NAME, null);
+        } else {
+            bundle.putString(AddRenameAlbum.ALBUM_NAME, albumNames[pos]);
+        }
+
+        // create intent and add bundle
+        Intent intent = new Intent(this, AddRenameAlbum.class);
+        intent.putExtras(bundle);
+
+        // start AlbumView activity
+        startActivityForResult(intent, EDIT_MOVIE_CODE);
+    }
+
     private void loadSearchView() {
 
         // create bundle
@@ -323,7 +363,6 @@ public class AlbumList extends AppCompatActivity {
 
         // start AlbumView activity
         startActivity(intent);
-
     }
 
 }

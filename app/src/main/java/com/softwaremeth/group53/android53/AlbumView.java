@@ -44,23 +44,19 @@ public class AlbumView extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String albumName = bundle.getString(AlbumList.ALBUM_NAME_KEY);
 
-        //
+        // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle(albumName);
         this.setSupportActionBar(toolbar);
 
-        //
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        // set action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // get gridView and set image adapter
-
         myImgAdapter = new ImageAdapter(this, albumName);
         GridView gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);
-
-
-
 
         Button buttonLoadImage = (Button)findViewById(R.id.loadimage);
         targetImage = (ImageView)findViewById(R.id.targetimage);
@@ -128,6 +124,5 @@ public class AlbumView extends AppCompatActivity {
                 applicationContext.getContentResolver(), targetImage, "Title", null);
         return Uri.parse(path);
     }
-
 
 }
