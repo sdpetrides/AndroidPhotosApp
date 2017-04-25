@@ -87,38 +87,6 @@ public class AlbumList extends AppCompatActivity {
         }
     }
 
-    /* GET IMAGE FILEPATHS */
-    /*
-    private void getImageFilePaths() {
-
-        final String[] columns = { MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID };
-        final String orderBy = MediaStore.Images.Media._ID;
-
-        // Stores all the images from the gallery in Cursor
-        Cursor cursor = getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
-                null, orderBy);
-        // Total number of images
-        int count = cursor.getCount();
-
-        // Create an array to store path to all the images
-        arrPath = new String[count];
-
-        System.out.println("Before loading paths: " + count);
-
-        for (int i = 0; i < count; i++) {
-            cursor.moveToPosition(i);
-            int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-            // Store the path of the image
-            arrPath[i] = cursor.getString(dataColumnIndex);
-
-            System.out.println(arrPath[i]);
-
-            Log.i("PATH", arrPath[i]);
-        }
-    }
-    */
-
     /* OPTIONS MENU */
 
     @Override
@@ -312,8 +280,7 @@ public class AlbumList extends AppCompatActivity {
             }
         });
     }
-
-
+    
     /* CHANGE ACTIVITIES */
 
     private void loadAlbumView(int pos) {

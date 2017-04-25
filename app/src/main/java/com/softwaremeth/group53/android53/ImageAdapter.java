@@ -51,109 +51,33 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView imageView;
 
-        // if it's not recycled, initialize some attributes
-        if (convertView == null) {
+        if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(115, 115));
+            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        /*
-        String ExternalStorageDirectoryPath = Environment
-                .getExternalStorageDirectory()
-                .getAbsolutePath();
-
-        String targetPath = ExternalStorageDirectoryPath + "/DCIM/Camera/";
-
-        File targetDirectory = new File(targetPath);
-
-        File[] files = targetDirectory.listFiles();
-
-        System.out.println(targetDirectory.toString());
-
-        for (File file : files){
-            System.out.println(file.toString());
-            // myImgAdapter.add(file.getAbsolutePath());
-        }
-        */
-
-        /*
-        Bitmap bitmap;
-        bitmap = BitmapFactory.decodeFile(mThumbIds.get(position));
-        imageView.setImageBitmap(bitmap);
-        */
-
-
-        // imageView.setImageResource(mThumbIds.get(position));
-
-        // imageView.setImageResource(R.drawable.sample_0);
-
-        // imageView = (ImageView)findViewById(R.id.image);
-
-        /*
-        System.out.println("Before getFileStreamPath");
-
-        File filePath = mContext.getFileStreamPath("IMG_20170421_123445.jpg");
-
-        System.out.println("After getFileStreamPath");
-
-        System.out.println("Before setImageDrawable");
-
-        imageView.setImageDrawable(Drawable.createFromPath(filePath.toString()));
-
-        System.out.println("Before setImageDrawable");
-
-        */
-
+        imageView.setImageBitmap(BitmapFactory.decodeFile(mThumbIds.get(position)));
         return imageView;
     }
 
-    // references to our images
-    // private Integer[] mThumbIds = { R.drawable.sample_0 };
-
     private void initThumbIds(String album_name) {
 
-        String jsonRaw = null;
+        // goes through JSON to get other paths to add
 
-        try {
-            InputStream is = mContext.getAssets().open("album.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            jsonRaw = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return;
-        }
-
-        JSONObject jObject = null;
-        JSONArray jAlbumNameArray = null;
-        JSONArray jPhotoIdArray = null;
-
-        try {
-
-            jObject = new JSONObject(jsonRaw);
-            jAlbumNameArray = jObject.getJSONArray("albumNames");
-
-            for (int i = 0; i < jAlbumNameArray.length(); i++) {
-
-                if (jAlbumNameArray.getJSONObject(i).get("name").equals(album_name)) {
-
-                    jPhotoIdArray = (JSONArray) jAlbumNameArray.getJSONObject(i).get("photoIds");
-                    for (int j = 0; j < jPhotoIdArray.length(); j++) {
-                        // System.out.println((String) jPhotoIdArray.get(j));
-                        mThumbIds.add((String) jPhotoIdArray.get(j));
-                    }
-                    break;
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
+
+    public void addPicture(String picture) {
+        // System.out.println("Path: " + Environment.getExternalStorageDirectory().getAbsolutePath());
+        // System.out.println("Picture: " + picture);
+        mThumbIds.add(picture);
+    }
+
+    public void removePicture(String picture) {
+        mThumbIds.remove(picture);
+    }
+
 }
