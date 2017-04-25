@@ -77,6 +77,42 @@ public class myJSON {
         return albumName;
     }
 
+    public JSONObject getAlbumObjectAt(long id) {
+
+        JSONObject jObject = getJSONObject();
+        JSONObject jTarget = null;
+
+        if (jObject == null) {
+            return null;
+        }
+
+        JSONArray jArray = null;
+        String albumName = null;
+
+        try {
+
+            jArray = jObject.getJSONArray("albumNames");
+
+            if (id >= jArray.length()) {
+                return null;
+            }
+
+            jTarget = jArray.getJSONObject((int)id);
+
+        } catch (JSONException e) {}
+
+        return jTarget;
+    }
+
+    public void setJSONAlbum() {
+
+
+
+
+    }
+
+
+
     public JSONObject getJSONObject() {
 
         String jsonRaw = null;
@@ -117,8 +153,6 @@ public class myJSON {
     public void setJSONObject(JSONObject jObject) {
 
         String jsonRaw = jObject.toString();
-
-        // System.out.println("GET jsonRaw: " + jsonRaw);
 
         byte [] buffer = jsonRaw.getBytes();
 

@@ -28,10 +28,16 @@ public class ImageAdapter extends BaseAdapter {
 
     private ArrayList<String> mThumbIds;
 
-    public ImageAdapter(Context c, String album_name) {
-        mContext = c;
+    private String album_name;
+
+    private int pos;
+
+    public ImageAdapter(Context c, String album_name, int pos) {
+        this.mContext = c;
+        this.album_name = album_name;
+        this.pos = pos;
         mThumbIds = new ArrayList<String>();
-        initThumbIds(album_name);
+        initThumbIds();
     }
 
     public int getCount() {
@@ -46,7 +52,6 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ImageView imageView;
@@ -60,24 +65,21 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
+        System.out.println("Position: " + position);
         imageView.setImageBitmap(BitmapFactory.decodeFile(mThumbIds.get(position)));
         return imageView;
     }
 
-    private void initThumbIds(String album_name) {
-
-        // goes through JSON to get other paths to add
+    private void initThumbIds() {
 
     }
 
     public void addPicture(String picture) {
-        // System.out.println("Path: " + Environment.getExternalStorageDirectory().getAbsolutePath());
-        // System.out.println("Picture: " + picture);
-        mThumbIds.add(picture);
+
     }
 
     public void removePicture(String picture) {
-        mThumbIds.remove(picture);
+
     }
 
 }

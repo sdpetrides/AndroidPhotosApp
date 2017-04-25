@@ -34,6 +34,8 @@ public class AlbumList extends AppCompatActivity {
 
     private static final int EDIT_MOVIE_CODE = 1;
     public static final String ALBUM_NAME_KEY = "album_name";
+    public static final String ALBUM_POS_KEY = "album_pos_key";
+
     public static boolean isAddNotRename;
     private int renameId;
 
@@ -41,7 +43,8 @@ public class AlbumList extends AppCompatActivity {
     ArrayAdapter<String> adapter;
 
     private String[] albumNames;
-    myJSON myJson;
+
+    static myJSON myJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,13 +168,10 @@ public class AlbumList extends AppCompatActivity {
         JSONArray jArray = null;
 
         if (jObject == null) {
-            // System.out.println("jObject is null");
             return false;
         }
 
         String strTemp = "{\"name\":\"" + newAlbumName + "\", \"photoIds\":\"[]\"}";
-
-        // System.out.println("strTemp: " + strTemp);
 
         try {
             JSONObject objTemp = new JSONObject(strTemp);
@@ -290,6 +290,7 @@ public class AlbumList extends AppCompatActivity {
 
         // put album name in the bundle
         bundle.putString(ALBUM_NAME_KEY, albumNames[pos]);
+        bundle.putInt(ALBUM_POS_KEY, pos);
 
         // create intent and add bundle
         Intent intent = new Intent(this, AlbumView.class);
@@ -332,4 +333,28 @@ public class AlbumList extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /* RETRIEVE AND SAVE STATE */
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getDelegate().onStart();
+
+        retrieveState();
+    }
+
+    private void retrieveState() {
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getDelegate().onStop();
+
+        saveState();
+    }
+
+    private void saveState() {
+    }
 }

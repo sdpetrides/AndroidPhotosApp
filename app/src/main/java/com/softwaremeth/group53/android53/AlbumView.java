@@ -17,6 +17,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -42,6 +44,7 @@ public class AlbumView extends AppCompatActivity {
     private String decodableString;
 
     ImageView targetImage;
+    GridView gridView;
 
     public ImageAdapter myImgAdapter;
 
@@ -56,6 +59,7 @@ public class AlbumView extends AppCompatActivity {
         // get the name and detail from bundle
         Bundle bundle = getIntent().getExtras();
         String albumName = bundle.getString(AlbumList.ALBUM_NAME_KEY);
+        int position  = bundle.getInt(AlbumList.ALBUM_POS_KEY);
 
         // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -67,23 +71,30 @@ public class AlbumView extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // get gridView and set image adapter
-        myImgAdapter = new ImageAdapter(this, albumName);
-        GridView gridView = (GridView) findViewById(R.id.grid_view);
+        myImgAdapter = new ImageAdapter(this, albumName, position);
+        gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);
+    }
 
-        Button buttonLoadImage = (Button)findViewById(R.id.loadimage);
-        targetImage = (ImageView)findViewById(R.id.targetimage);
+    /* OPTIONS MENU */
 
-        buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.album_view_toolbar_menu, menu);
+        return true;
+    }
 
-            @Override
-            public void onClick(View arg0) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, 0);
-                }
-            }
-        );
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -97,6 +108,8 @@ public class AlbumView extends AppCompatActivity {
 
             myImgAdapter.addPicture(decodableString);
             myImgAdapter.notifyDataSetChanged();
+            gridView.invalidateViews();
+            gridView.setAdapter(myImgAdapter);
         }
 
         // update JSON
