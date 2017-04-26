@@ -44,6 +44,8 @@ public class AlbumList extends AppCompatActivity {
 
     private String[] albumNames;
 
+    public User user;
+
     static myJSON myJson;
 
     @Override
@@ -340,7 +342,13 @@ public class AlbumList extends AppCompatActivity {
         super.onStart();
         getDelegate().onStart();
 
-        retrieveState();
+        try {
+            this.user = User.readApp(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void retrieveState() {
@@ -352,9 +360,10 @@ public class AlbumList extends AppCompatActivity {
         super.onStop();
         getDelegate().onStop();
 
-        saveState();
-    }
-
-    private void saveState() {
+        try {
+            user.writeApp(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
