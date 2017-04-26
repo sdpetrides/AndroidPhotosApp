@@ -21,6 +21,14 @@ public class Album implements Serializable {
         return albumName;
     }
 
+    public Photo getPhotoAt(int position) {
+        return photos.get(position);
+    }
+
+    public int getNumPhotos() {
+        return photos.size();
+    }
+
     public void setAlbumName(String albumName) {
         this.albumName = albumName;
     }
@@ -32,5 +40,4 @@ public class Album implements Serializable {
     public String toString() {
         return albumName;
     }
-
 }

@@ -12,8 +12,6 @@ import android.widget.TextView;
 public class AddRenameAlbum extends AppCompatActivity {
 
     public static final String ALBUM_NAME = "album_name";
-    public static final String ALBUM_BOOLEAN = "album_boolean";
-    public static final String ALBUM_POS = "album_pos";
 
     EditText albumNameTextView;
 
@@ -52,6 +50,8 @@ public class AddRenameAlbum extends AppCompatActivity {
 
         // get new name from xml
         String name = albumNameTextView.getText().toString();
+
+        // TODO: alert dialog
 
         // create bundle and add new name to bundle
         Bundle bundle = new Bundle();

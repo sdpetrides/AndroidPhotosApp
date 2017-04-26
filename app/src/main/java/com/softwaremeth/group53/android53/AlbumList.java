@@ -35,6 +35,7 @@ public class AlbumList extends AppCompatActivity {
     private static final int EDIT_MOVIE_CODE = 1;
     public static final String ALBUM_NAME_KEY = "album_name";
     public static final String ALBUM_POS_KEY = "album_pos_key";
+    public static final String USER_KEY = "user_key";
 
     public static boolean isAddNotRename;
     private int renameId;
@@ -44,9 +45,7 @@ public class AlbumList extends AppCompatActivity {
 
     private String[] albumNames;
 
-    public User user;
-
-    static myJSON myJson;
+    public static User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +53,17 @@ public class AlbumList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_list);
 
-        // get myJson object
-        myJson = new myJSON(this, "album_4.json");
+
+        user = User.retrieveState(this);
+
+        // get User object
+        if (user == null) {
+            user = new User();
+            user.saveState(this);
+        }
+
+        // get albumNames from user
+        albumNames = user.getAlbumsArray();
 
         // initialize toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -65,9 +73,6 @@ public class AlbumList extends AppCompatActivity {
         // get listView
         listView = (ListView) findViewById(R.id.albums_list);
 
-        // get albumNames from album.json
-        albumNames = myJson.getAlbumNames();
-
         if (albumNames == null) {
 
             // set listView with empty element
@@ -75,14 +80,9 @@ public class AlbumList extends AppCompatActivity {
 
         } else {
 
-            // populate listView with albumNames
-            adapter = new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
-            listView.setAdapter(adapter);
+            // update listview
+            updateAlbumListView();
 
-            // set context menu for listView items
-            registerForContextMenu(listView);
-
-            // set listener to load album view
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -166,106 +166,56 @@ public class AlbumList extends AppCompatActivity {
 
     private boolean addAlbum(String newAlbumName) {
 
-        JSONObject jObject = myJson.getJSONObject();
-        JSONArray jArray = null;
+        // create album
+        Album a = new Album(newAlbumName);
 
-        if (jObject == null) {
-            return false;
-        }
+        // add to albums
+        user.albums.add(a);
 
-        String strTemp = "{\"name\":\"" + newAlbumName + "\", \"photoIds\":\"[]\"}";
+        // save state
+        user.saveState(this);
 
-        try {
-            JSONObject objTemp = new JSONObject(strTemp);
-            jArray = jObject.getJSONArray("albumNames");
-            jArray.put(objTemp);
-        } catch (JSONException e) {
-            return false;
-        }
-
-        myJson.setJSONObject(jObject);
-
-        // get albumNames from album.json
-        albumNames = myJson.getAlbumNames();
-
-        // populate listView with albumNames
-        adapter = new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
-        listView.setAdapter(adapter);
-
-        // set context menu for listView items
-        registerForContextMenu(listView);
-
-        // set listener to load album view
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                loadAlbumView(position);
-            }
-        });
+        // update listview
+        updateAlbumListView();
 
         return true;
     }
 
     private boolean renameAlbum(String newAlbumName, long id) {
 
-        JSONObject jObject = myJson.getJSONObject();
-        JSONArray jArray = null;
+        // get album
+        Album a = user.albums.get((int)id);
 
-        if (jObject == null) {
-            return false;
-        }
+        // update name
+        a.setAlbumName(newAlbumName);
 
-        try {
-            jArray = jObject.getJSONArray("albumNames");
-            JSONObject jObjectTemp = jArray.getJSONObject((int) id);
-            jObjectTemp.putOpt("name", newAlbumName);
-            jObject.remove("albumNames");
-            jObject.put("albumNames", jArray);
-        } catch (JSONException e) {}
+        // save state
+        user.saveState(this);
 
-        myJson.setJSONObject(jObject);
-
-        // get albumNames from album.json
-        albumNames = myJson.getAlbumNames();
-
-        // populate listView with albumNames
-        adapter = new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
-        listView.setAdapter(adapter);
-
-        // set context menu for listView items
-        registerForContextMenu(listView);
-
-        // set listener to load album view
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                loadAlbumView(position);
-            }
-        });
+        // update listview
+        updateAlbumListView();
 
         return true;
     }
 
     private void deleteAlbum(long id) {
 
-        JSONObject jObject = myJson.getJSONObject();
-        JSONArray jArray = null;
+        // remove album
+        user.albums.remove((int)id);
 
-        if (jObject == null) {
-            return;
-        }
+        // save state
+        user.saveState(this);
 
-        try {
-            jArray = jObject.getJSONArray("albumNames");
-            jArray.remove((int) id);
-            jObject.remove("albumNames");
-            jObject.put("albumNames", jArray);
-        } catch (JSONException e) {}
+        // update listview
+        updateAlbumListView();
+    }
 
-        myJson.setJSONObject(jObject);
+    private void updateAlbumListView() {
 
-        // get albumNames from album.json
-        albumNames = myJson.getAlbumNames();
+        // get updated albumlist
+        albumNames = user.getAlbumsArray();
+
+        System.out.println("after:  " + user.albums);
 
         // populate listView with albumNames
         adapter = new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
@@ -273,14 +223,6 @@ public class AlbumList extends AppCompatActivity {
 
         // set context menu for listView items
         registerForContextMenu(listView);
-
-        // set listener to load album view
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                loadAlbumView(position);
-            }
-        });
     }
     
     /* CHANGE ACTIVITIES */
@@ -333,37 +275,5 @@ public class AlbumList extends AppCompatActivity {
 
         // start AlbumView activity
         startActivity(intent);
-    }
-
-    /* RETRIEVE AND SAVE STATE */
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getDelegate().onStart();
-
-        try {
-            this.user = User.readApp(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void retrieveState() {
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        getDelegate().onStop();
-
-        try {
-            user.writeApp(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

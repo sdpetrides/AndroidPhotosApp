@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -34,16 +36,14 @@ import java.util.ArrayList;
 public class AlbumView extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    private ArrayList<String> albumPhotoNames;
+    private String imagePath;
 
-    private String decodableString;
-
-    ImageView targetImage;
     GridView gridView;
 
     public ImageAdapter myImgAdapter;
@@ -54,6 +54,7 @@ public class AlbumView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_view);
 
+        // verify permissions
         verifyStoragePermissions(this);
 
         // get the name and detail from bundle
@@ -74,6 +75,17 @@ public class AlbumView extends AppCompatActivity {
         myImgAdapter = new ImageAdapter(this, albumName, position);
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Photo selectedPhoto = (Photo) gridView.getItemAtPosition(i);
+
+                loadDisplayPhoto(selectedPhoto);
+
+            }
+        });
     }
 
     /* OPTIONS MENU */
@@ -103,16 +115,21 @@ public class AlbumView extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
 
+            // get path from result
             Uri tempUri = intent.getData();
             getRealPathFromURI(tempUri);
 
-            myImgAdapter.addPicture(decodableString);
+            // add picture to album
+            myImgAdapter.addPicture(imagePath);
+
+            // save state
+            AlbumList.user.saveState(this);
+
+            // update gridview
             myImgAdapter.notifyDataSetChanged();
             gridView.invalidateViews();
             gridView.setAdapter(myImgAdapter);
         }
-
-        // update JSON
     }
 
     private String getRealPathFromURI(Uri tempUri) {
@@ -132,10 +149,18 @@ public class AlbumView extends AppCompatActivity {
         cursor.moveToFirst();
 
         int columnIndex = cursor.getColumnIndex(filePathArray[0]);
-        decodableString = cursor.getString(columnIndex);
+        imagePath = cursor.getString(columnIndex);
         cursor.close();
 
-        return decodableString;
+        return imagePath;
+    }
+
+    private void loadDisplayPhoto(Photo photo) {
+
+        // create bundle
+        Bundle bundle = new Bundle();
+
+        bundle.putString(DisplayView.PATH_KEY, photo.getPath());
     }
 
     public void verifyStoragePermissions(Activity activity) {
