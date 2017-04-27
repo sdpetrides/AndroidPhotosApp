@@ -14,14 +14,29 @@ import java.util.ArrayList;
 
 public class User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public ArrayList<Album> albums;
     public ArrayList<Photo> photos;
 
-    private static final long serialVersionUID = 1L;
+    public Album currentAlbum;
+    public Photo currentPhoto;
+
+    public int albumPos;
+    public int photoPos;
+
+    public String currentAlbumName;
+    public String currentPhotoPath; // may not need
 
     public User() {
         this.albums = new ArrayList<Album>();
         this.photos = new ArrayList<Photo>();
+        this.currentAlbum = null;
+        this.currentPhoto = null;
+        this.albumPos = -1;
+        this.photoPos = -1;
+        this.currentAlbumName = null;
+        this.currentPhotoPath = null;
     }
 
     public String[] getAlbumsArray() {

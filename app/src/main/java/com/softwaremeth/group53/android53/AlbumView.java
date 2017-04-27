@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public class AlbumView extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static final int DISPLAY_PHOTO_CODE = 1;
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -44,12 +45,18 @@ public class AlbumView extends AppCompatActivity {
 
     private String imagePath;
 
+    private String albumName;
+
+    private int albumPos;
+
     GridView gridView;
 
     public ImageAdapter myImgAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        System.out.println("AlbumView: onCreate");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_view);
@@ -58,9 +65,13 @@ public class AlbumView extends AppCompatActivity {
         verifyStoragePermissions(this);
 
         // get the name and detail from bundle
-        Bundle bundle = getIntent().getExtras();
-        String albumName = bundle.getString(AlbumList.ALBUM_NAME_KEY);
-        int position  = bundle.getInt(AlbumList.ALBUM_POS_KEY);
+        // Bundle bundle = getIntent().getExtras();
+
+
+        // albumName = bundle.getString(AlbumList.ALBUM_NAME_KEY);
+        // albumPos  = bundle.getInt(AlbumList.ALBUM_POS_KEY);
+        albumPos = AlbumList.user.albumPos;
+        albumName = AlbumList.user.albums.get(albumPos).getAlbumName();
 
         // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -72,18 +83,14 @@ public class AlbumView extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // get gridView and set image adapter
-        myImgAdapter = new ImageAdapter(this, albumName, position);
+        myImgAdapter = new ImageAdapter(this, albumName, albumPos);
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                Photo selectedPhoto = (Photo) gridView.getItemAtPosition(i);
-
-                loadDisplayPhoto(selectedPhoto);
-
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                loadDisplayPhoto(pos);
             }
         });
     }
@@ -155,12 +162,24 @@ public class AlbumView extends AppCompatActivity {
         return imagePath;
     }
 
-    private void loadDisplayPhoto(Photo photo) {
+    private void loadDisplayPhoto(int photoPos) {
 
         // create bundle
-        Bundle bundle = new Bundle();
+        // Bundle bundle = new Bundle();
 
-        bundle.putString(DisplayView.PATH_KEY, photo.getPath());
+        // put album name and photo position in bundle
+        // bundle.putInt(AlbumList.ALBUM_POS_KEY, albumPos);
+        // bundle.putInt(DisplayView.PHOTO_POS_KEY, photoPos);
+
+        AlbumList.user.photoPos = photoPos;
+        AlbumList.user.currentPhoto = AlbumList.user.albums.get(albumPos).getPhotoAt(photoPos);
+
+        // create intent and add bundle
+        Intent intent = new Intent(this, DisplayView.class);
+        // intent.putExtras(bundle);
+
+        // start AlbumView activity
+        startActivity(intent);
     }
 
     public void verifyStoragePermissions(Activity activity) {

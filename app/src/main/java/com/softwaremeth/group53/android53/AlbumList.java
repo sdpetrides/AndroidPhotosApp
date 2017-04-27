@@ -32,15 +32,16 @@ import java.io.InputStream;
 
 public class AlbumList extends AppCompatActivity {
 
-    private static final int EDIT_MOVIE_CODE = 1;
+    private static final int EDIT_ALBUM_CODE = 1;
+
     public static final String ALBUM_NAME_KEY = "album_name";
     public static final String ALBUM_POS_KEY = "album_pos_key";
-    public static final String USER_KEY = "user_key";
 
     public static boolean isAddNotRename;
     private int renameId;
 
     private ListView listView;
+
     ArrayAdapter<String> adapter;
 
     private String[] albumNames;
@@ -53,7 +54,7 @@ public class AlbumList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_list);
 
-
+        // retrieve state
         user = User.retrieveState(this);
 
         // get User object
@@ -105,7 +106,8 @@ public class AlbumList extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_add:
                 isAddNotRename = true;
-                loadAddRenameAlbum(-1);
+                AlbumList.user.albumPos = -1;
+                loadAddRenameAlbum();
                 return true;
             case R.id.action_search:
                 loadSearchView();
@@ -131,8 +133,8 @@ public class AlbumList extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.rename:
                 isAddNotRename = false;
-                renameId = (int)info.id;
-                loadAddRenameAlbum((int)info.id);
+                AlbumList.user.albumPos = (int)info.id;
+                loadAddRenameAlbum();
                 return true;
             case R.id.delete:
                 deleteAlbum(info.id);
@@ -157,7 +159,7 @@ public class AlbumList extends AppCompatActivity {
         if (isAddNotRename) {
             addAlbum(newAlbumName);
         } else {
-            renameAlbum(newAlbumName, renameId);
+            renameAlbum(newAlbumName);
         }
 
     }
@@ -181,10 +183,13 @@ public class AlbumList extends AppCompatActivity {
         return true;
     }
 
-    private boolean renameAlbum(String newAlbumName, long id) {
+    private boolean renameAlbum(String newAlbumName) {
+
+        // get id
+        int id = AlbumList.user.albumPos;
 
         // get album
-        Album a = user.albums.get((int)id);
+        Album a = user.albums.get(id);
 
         // update name
         a.setAlbumName(newAlbumName);
@@ -215,8 +220,6 @@ public class AlbumList extends AppCompatActivity {
         // get updated albumlist
         albumNames = user.getAlbumsArray();
 
-        System.out.println("after:  " + user.albums);
-
         // populate listView with albumNames
         adapter = new ArrayAdapter<String>(this, R.layout.album_cell, albumNames);
         listView.setAdapter(adapter);
@@ -229,39 +232,31 @@ public class AlbumList extends AppCompatActivity {
 
     private void loadAlbumView(int pos) {
 
-        // create bundle
-        Bundle bundle = new Bundle();
+        // put album name in user
+        AlbumList.user.albumPos = pos;
 
-        // put album name in the bundle
-        bundle.putString(ALBUM_NAME_KEY, albumNames[pos]);
-        bundle.putInt(ALBUM_POS_KEY, pos);
-
-        // create intent and add bundle
+        // create intent
         Intent intent = new Intent(this, AlbumView.class);
-        intent.putExtras(bundle);
 
         // start AlbumView activity
         startActivity(intent);
     };
 
-    private void loadAddRenameAlbum(int pos) {
+    private void loadAddRenameAlbum() {
 
-        // create bundle
-        Bundle bundle = new Bundle();
 
-        // put album name in the bundle
+        // put album name in user
         if (isAddNotRename) {
-            bundle.putString(AddRenameAlbum.ALBUM_NAME, null);
+            AlbumList.user.currentAlbumName = null;
         } else {
-            bundle.putString(AddRenameAlbum.ALBUM_NAME, albumNames[pos]);
+            AlbumList.user.currentAlbumName = albumNames[AlbumList.user.albumPos];
         }
 
-        // create intent and add bundle
+        // create intent
         Intent intent = new Intent(this, AddRenameAlbum.class);
-        intent.putExtras(bundle);
 
         // start AlbumView activity
-        startActivityForResult(intent, EDIT_MOVIE_CODE);
+        startActivityForResult(intent, EDIT_ALBUM_CODE);
     }
 
     private void loadSearchView() {

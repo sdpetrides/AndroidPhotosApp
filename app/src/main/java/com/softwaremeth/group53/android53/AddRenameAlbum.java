@@ -15,6 +15,8 @@ public class AddRenameAlbum extends AppCompatActivity {
 
     EditText albumNameTextView;
 
+    private String albumName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -26,8 +28,9 @@ public class AddRenameAlbum extends AppCompatActivity {
         albumNameTextView = (EditText) findViewById(R.id.album_name);
 
         // get the name and detail from bundle
-        Bundle bundle = getIntent().getExtras();
-        String albumName = bundle.getString(ALBUM_NAME);
+        // Bundle bundle = getIntent().getExtras();
+        // String albumName = bundle.getString(ALBUM_NAME);
+        albumName = AlbumList.user.currentAlbumName;
 
         // set title and hint if renaming
         if (AlbumList.isAddNotRename) {

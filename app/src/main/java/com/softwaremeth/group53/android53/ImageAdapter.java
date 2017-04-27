@@ -38,7 +38,6 @@ public class ImageAdapter extends BaseAdapter {
     private GridView parent;
 
     public ImageAdapter(Context c, String album_name, int pos) {
-        System.out.println("New Image Adapter");
         this.mContext = c;
         this.album_name = album_name;
         this.pos = pos;
@@ -59,7 +58,7 @@ public class ImageAdapter extends BaseAdapter {
 
         for (int i = 0; i < parent.getChildCount(); i++) {
             if (i == position) {
-                parent.getChildAt(position).setBackgroundColor(Color.CYAN);
+                parent.getChildAt(position).setBackgroundColor(Color.BLUE);
             } else {
                 parent.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
             }
@@ -68,7 +67,6 @@ public class ImageAdapter extends BaseAdapter {
 
         for (int i = 0; i < parent.getChildCount(); i++) {
             if (parent.getChildAt(i).isSelected()) {
-                System.out.println("Selected: " + i);
                 break;
             }
         }
