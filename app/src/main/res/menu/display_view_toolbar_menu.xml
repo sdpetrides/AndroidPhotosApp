@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_slideshow"
+        android:icon="@drawable/ic_slideshow_black_24dp"
+        android:title="@string/action_details"
+        appcompat:showAsAction="always" />
+    <item
+        android:id="@+id/action_details"
+        android:icon="@drawable/ic_details_black_24dp"
+        android:title="@string/action_details"
+        appcompat:showAsAction="always" />
+</menu>

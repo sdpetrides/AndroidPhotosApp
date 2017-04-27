@@ -3,6 +3,7 @@ package com.softwaremeth.group53.android53;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,13 +13,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 public class DisplayView extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    public static final String PHOTO_POS_KEY = "photo_pos_key";
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -57,6 +59,51 @@ public class DisplayView extends AppCompatActivity {
 
         // set image bitmap
         imageView.setImageBitmap(bm);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.display_view_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_details:
+                loadPhotoDetailsView();
+                return true;
+            case R.id.action_slideshow:
+                loadSlideshow();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+
+
+
+        // save state
+        AlbumList.user.saveState(this);
+
+        return;
+    }
+
+    private void loadPhotoDetailsView() {
+
+        // create intent
+        Intent intent = new Intent(this, DetailsView.class);
+
+        // start AlbumView activity
+        startActivity(intent);
+
+    }
+
+    private void loadSlideshow() {
+
     }
 
     public void verifyStoragePermissions(Activity activity) {
