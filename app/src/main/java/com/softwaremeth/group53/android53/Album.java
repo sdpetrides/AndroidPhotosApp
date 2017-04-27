@@ -40,4 +40,8 @@ public class Album implements Serializable {
     public String toString() {
         return albumName;
     }
+
+    public void removeAt(int pos) {
+        photos.remove(pos);
+    }
 }

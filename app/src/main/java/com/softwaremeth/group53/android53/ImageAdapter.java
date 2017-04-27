@@ -115,7 +115,10 @@ public class ImageAdapter extends BaseAdapter {
         selectedAlbum.addPhoto(p);
     }
 
-    public void removePicture(String path) {
+    public void removePicture(int pos) {
+
+        // remove photo from album
+        selectedAlbum.removeAt(pos);
 
     }
 

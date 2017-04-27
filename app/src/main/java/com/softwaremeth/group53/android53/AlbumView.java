@@ -18,7 +18,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -56,20 +58,13 @@ public class AlbumView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        System.out.println("AlbumView: onCreate");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_view);
 
         // verify permissions
         verifyStoragePermissions(this);
 
-        // get the name and detail from bundle
-        // Bundle bundle = getIntent().getExtras();
-
-
-        // albumName = bundle.getString(AlbumList.ALBUM_NAME_KEY);
-        // albumPos  = bundle.getInt(AlbumList.ALBUM_POS_KEY);
+        // set album name and album position
         albumPos = AlbumList.user.albumPos;
         albumName = AlbumList.user.albums.get(albumPos).getAlbumName();
 
@@ -93,6 +88,9 @@ public class AlbumView extends AppCompatActivity {
                 loadDisplayPhoto(pos);
             }
         });
+
+        // set context menu for listView items
+        registerForContextMenu(gridView);
     }
 
     /* OPTIONS MENU */
@@ -113,6 +111,40 @@ public class AlbumView extends AppCompatActivity {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    /* CONTEXT MENU */
+
+    @Override
+    public void onCreateContextMenu(
+            ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.photo_list_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.remove:
+
+                // remove picture
+                myImgAdapter.removePicture((int)info.id);
+
+                // save state
+                AlbumList.user.saveState(this);
+
+                // update gridview
+                myImgAdapter.notifyDataSetChanged();
+                gridView.invalidateViews();
+                gridView.setAdapter(myImgAdapter);
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 
@@ -164,19 +196,12 @@ public class AlbumView extends AppCompatActivity {
 
     private void loadDisplayPhoto(int photoPos) {
 
-        // create bundle
-        // Bundle bundle = new Bundle();
-
-        // put album name and photo position in bundle
-        // bundle.putInt(AlbumList.ALBUM_POS_KEY, albumPos);
-        // bundle.putInt(DisplayView.PHOTO_POS_KEY, photoPos);
-
+        // set photo position and current photo
         AlbumList.user.photoPos = photoPos;
         AlbumList.user.currentPhoto = AlbumList.user.albums.get(albumPos).getPhotoAt(photoPos);
 
         // create intent and add bundle
         Intent intent = new Intent(this, DisplayView.class);
-        // intent.putExtras(bundle);
 
         // start AlbumView activity
         startActivity(intent);
