@@ -3,6 +3,7 @@ package com.softwaremeth.group53.android53;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
@@ -32,7 +33,12 @@ public class ImageAdapter extends BaseAdapter {
 
     private int pos;
 
+    private int selectedPos = -1;
+
+    private GridView parent;
+
     public ImageAdapter(Context c, String album_name, int pos) {
+        System.out.println("New Image Adapter");
         this.mContext = c;
         this.album_name = album_name;
         this.pos = pos;
@@ -49,6 +55,24 @@ public class ImageAdapter extends BaseAdapter {
 
     public Object getItem(int position) {
 
+        selectedPos = position;
+
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            if (i == position) {
+                parent.getChildAt(position).setBackgroundColor(Color.CYAN);
+            } else {
+                parent.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
+        parent.getChildAt(position).setSelected(true);
+
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            if (parent.getChildAt(i).isSelected()) {
+                System.out.println("Selected: " + i);
+                break;
+            }
+        }
+
         return selectedAlbum.getPhotoAt(position);
     }
 
@@ -63,6 +87,8 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ImageView imageView;
+
+        this.parent = (GridView) parent;
 
         if (convertView == null) {
             imageView = new ImageView(mContext);
