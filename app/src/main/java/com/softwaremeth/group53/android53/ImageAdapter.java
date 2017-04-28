@@ -29,20 +29,14 @@ public class ImageAdapter extends BaseAdapter {
 
     private Album selectedAlbum;
 
-    private String album_name;
-
     private int pos;
-
-    private int selectedPos = -1;
 
     private GridView parent;
 
-    public ImageAdapter(Context c, String album_name, int pos) {
+    public ImageAdapter(Context c, Album a) {
         this.mContext = c;
-        this.album_name = album_name;
-        this.pos = pos;
         try {
-            selectedAlbum = AlbumList.user.albums.get(pos);
+            selectedAlbum = a;
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -54,7 +48,7 @@ public class ImageAdapter extends BaseAdapter {
 
     public Object getItem(int position) {
 
-        selectedPos = position;
+        /*selectedPos = position;
 
         for (int i = 0; i < parent.getChildCount(); i++) {
             if (i == position) {
@@ -69,7 +63,7 @@ public class ImageAdapter extends BaseAdapter {
             if (parent.getChildAt(i).isSelected()) {
                 break;
             }
-        }
+        }*/
 
         return selectedAlbum.getPhotoAt(position);
     }
@@ -113,6 +107,7 @@ public class ImageAdapter extends BaseAdapter {
 
         // add photo to album
         selectedAlbum.addPhoto(p);
+        AlbumList.user.allPhotos.addPhoto(p);
     }
 
     public void removePicture(int pos) {

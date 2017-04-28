@@ -17,7 +17,8 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public ArrayList<Album> albums;
-    public ArrayList<Photo> photos;
+
+    public Album allPhotos;
 
     public Album currentAlbum;
     public Photo currentPhoto;
@@ -30,7 +31,7 @@ public class User implements Serializable {
 
     public User() {
         this.albums = new ArrayList<Album>();
-        this.photos = new ArrayList<Photo>();
+        this.allPhotos = new Album("allPhotos");
         this.currentAlbum = null;
         this.currentPhoto = null;
         this.albumPos = -1;

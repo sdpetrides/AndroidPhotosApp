@@ -110,6 +110,7 @@ public class AlbumList extends AppCompatActivity {
                 loadAddRenameAlbum();
                 return true;
             case R.id.action_search:
+                System.out.println("Search clicked");
                 loadSearchView();
             default:
                 return super.onOptionsItemSelected(item);
@@ -267,6 +268,8 @@ public class AlbumList extends AppCompatActivity {
         // create intent and add bundle
         Intent intent = new Intent(this, SearchPhotos.class);
         intent.putExtras(bundle);
+
+        System.out.println("Bundle Created");
 
         // start AlbumView activity
         startActivity(intent);

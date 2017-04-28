@@ -19,8 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class DisplayView extends AppCompatActivity {
 
@@ -30,6 +34,12 @@ public class DisplayView extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    Photo photo;
+
+    ArrayAdapter<String> adapter;
+
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +51,13 @@ public class DisplayView extends AppCompatActivity {
         verifyStoragePermissions(this);
 
         // get photo object
-        Photo photo = AlbumList.user.currentPhoto;
+        photo = AlbumList.user.currentPhoto;
 
         // get path from photo object
         String path = photo.getPath();
+
+        // get listView
+        listView = (ListView) findViewById(R.id.tags_list);
 
         // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -63,6 +76,9 @@ public class DisplayView extends AppCompatActivity {
 
         // set image bitmap
         imageView.setImageBitmap(bm);
+
+        // populate listView
+        updateTagsListView();
     }
 
     @Override
@@ -125,5 +141,21 @@ public class DisplayView extends AppCompatActivity {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+    }
+
+    private void updateTagsListView() {
+
+        ArrayList<String> combine = new ArrayList<String>();
+
+        combine.addAll(photo.locationTags);
+        combine.addAll(photo.personTags);
+
+
+        // populate listView with albumNames
+        adapter = new ArrayAdapter<String>(this, R.layout.album_cell, combine);
+        listView.setAdapter(adapter);
+
+        // set context menu for listView items
+        registerForContextMenu(listView);
     }
 }

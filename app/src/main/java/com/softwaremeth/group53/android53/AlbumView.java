@@ -78,7 +78,7 @@ public class AlbumView extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // get gridView and set image adapter
-        myImgAdapter = new ImageAdapter(this, albumName, albumPos);
+        myImgAdapter = new ImageAdapter(this, AlbumList.user.albums.get(albumPos));
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);
 
@@ -160,6 +160,7 @@ public class AlbumView extends AppCompatActivity {
 
             // add picture to album
             myImgAdapter.addPicture(imagePath);
+
 
             // save state
             AlbumList.user.saveState(this);

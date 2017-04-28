@@ -13,6 +13,10 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <ListView
+        android:id="@+id/tags_list"
+        android:layout_height="250dp"
+        android:layout_width="match_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +27,29 @@
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background" />
+            android:background="@android:drawable/editbox_background"
+            android:maxLines="1"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionDone" />
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/locationRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:checked="true"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton
+            android:id="@+id/personRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Person"
+            android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,16 +63,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
-                android:onClick="save"
-                android:text="@string/save_label"
-                android:textSize="16sp" />
-            <Button
-                android:id="@+id/text_cancel"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:onClick="cancel"
-                android:text="@string/cancel_label"
+                android:onClick="add"
+                android:text="Add"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>

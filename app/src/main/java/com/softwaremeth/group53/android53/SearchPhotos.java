@@ -9,9 +9,11 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,11 +24,18 @@ import java.io.InputStream;
 
 public class SearchPhotos extends AppCompatActivity {
 
+    //true = location; false = person
+    Boolean tagType;
+
     private ListView listView;
 
     private String[] photoNames;
 
     ArrayAdapter<String> adapter;
+
+    GridView gridView;
+
+    public ImageAdapter myImgAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +43,18 @@ public class SearchPhotos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_view);
 
+        // sets tag type to Location
+        tagType = true;
+
         //
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Search Photos");
         this.setSupportActionBar(toolbar);
 
         // get gridView and set image adapter
-        listView = (ListView)findViewById(R.id.albums_list);
-
-        // get albumNames from album.json
-        photoNames = getPhotoNames();
-
-        // populate listView with albumNames
-        adapter = new ArrayAdapter<String>(this, R.layout.photo_cell, photoNames);
-        listView.setAdapter(adapter);
+        myImgAdapter = new ImageAdapter(this, AlbumList.user.allPhotos);
+        gridView = (GridView) findViewById(R.id.grid_view);
+        gridView.setAdapter(myImgAdapter);
 
         //
         ActionBar ab = getSupportActionBar();
@@ -83,66 +90,47 @@ public class SearchPhotos extends AppCompatActivity {
         }
     }
 
-    /* MANAGE PHOTOS NAMES */
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
 
-    private String[] getPhotoNames() {
-
-        String jsonRaw = null;
-
-        try {
-            InputStream is = getAssets().open("album.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            jsonRaw = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.locationRadioButton:
+                if (checked)
+                    tagType = true;
+                break;
+            case R.id.personRadioButton:
+                if (checked)
+                    tagType = false;
+                break;
         }
-
-        JSONObject jObject = null;
-        JSONArray jArray = null;
-        String[] albumNames = null;
-        String[] photoNames = null;
-
-        try {
-
-            jObject = new JSONObject(jsonRaw);
-
-            jArray = jObject.getJSONArray("albumNames");
-
-            albumNames = new String[jArray.length()];
-
-            for (int i = 0; i < jArray.length(); i++) {
-                if (jArray.getJSONObject(i).get("name").equals("__allPhotos__")) {
-
-                    jArray = (JSONArray) jArray.getJSONObject(i).get("photoIds");
-
-                    photoNames = new String[jArray.length()];
-
-                    for (int j = 0; j < jArray.length(); j++) {
-                        photoNames[j] = (String) jArray.get(j);
-                    }
-
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        if (photoNames == null) {
-            System.out.println("No photos");
-            System.exit(0);
-        }
-
-        System.out.println(photoNames[1]);
-
-        return photoNames;
     }
 
-    private void setAlbumNames(String[] albumNames) {
+    private void search(String tag) {
 
+        Album temp = new Album("temp");
+
+        for (Photo p: AlbumList.user.allPhotos.getPhotos()) {
+            if (tagType) {
+                for (String s: p.locationTags) {
+                    if (s.startsWith(tag)) {
+                        temp.addPhoto(p);
+                        break;
+                    }
+                }
+            } else {
+                for (String s: p.personTags) {
+                    if (s.startsWith(tag)) {
+                        temp.addPhoto(p);
+                        break;
+                    }
+                }
+            }
+        }
+
+        myImgAdapter = new ImageAdapter(this, temp);
+        gridView = (GridView) findViewById(R.id.grid_view);
+        gridView.setAdapter(myImgAdapter);
     }
 }
