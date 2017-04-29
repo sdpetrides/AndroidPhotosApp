@@ -35,11 +35,7 @@ public class AlbumList extends AppCompatActivity {
 
     private static final int EDIT_ALBUM_CODE = 1;
 
-    public static final String ALBUM_NAME_KEY = "album_name";
-    public static final String ALBUM_POS_KEY = "album_pos_key";
-
     public static boolean isAddNotRename;
-    private int renameId;
 
     private ListView listView;
 
@@ -106,12 +102,18 @@ public class AlbumList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
+
+                // set add state
                 isAddNotRename = true;
                 AlbumList.user.albumPos = -1;
+
+                // load add activity
                 loadAddRenameAlbum();
+
                 return true;
             case R.id.action_search:
-                System.out.println("Search clicked");
+
+                /// load search activity
                 loadSearchView();
             default:
                 return super.onOptionsItemSelected(item);
@@ -264,7 +266,6 @@ public class AlbumList extends AppCompatActivity {
 
     private void loadAddRenameAlbum() {
 
-
         // put album name in user
         if (isAddNotRename) {
             AlbumList.user.currentAlbumName = null;
@@ -281,14 +282,8 @@ public class AlbumList extends AppCompatActivity {
 
     private void loadSearchView() {
 
-        // create bundle
-        Bundle bundle = new Bundle();
-
-        // create intent and add bundle
+        // create intent
         Intent intent = new Intent(this, SearchPhotos.class);
-        intent.putExtras(bundle);
-
-        System.out.println("Bundle Created");
 
         // start AlbumView activity
         startActivity(intent);

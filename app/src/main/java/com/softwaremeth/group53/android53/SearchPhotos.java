@@ -26,14 +26,9 @@ import java.io.InputStream;
 
 public class SearchPhotos extends AppCompatActivity {
 
-    //true = location; false = person
     Boolean tagType;
-
-    private ListView listView;
-
-    private String[] photoNames;
-
-    ArrayAdapter<String> adapter;
+        // true = location;
+        // false = person
 
     GridView gridView;
 
@@ -48,7 +43,7 @@ public class SearchPhotos extends AppCompatActivity {
         // sets tag type to Location
         tagType = true;
 
-        //
+        // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Search Photos");
         this.setSupportActionBar(toolbar);
@@ -56,15 +51,15 @@ public class SearchPhotos extends AppCompatActivity {
         // Display all photos
         displayAllPhotos();
 
-
-        //
+        // set actionbar
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
     }
 
     private void displayAllPhotos() {
-        // get gridView and set image adapter
+
+        // display all photos
         myImgAdapter = new ImageAdapter(this, AlbumList.user.allPhotos);
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);
@@ -75,14 +70,15 @@ public class SearchPhotos extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        // inflate toolbar menu
         getMenuInflater().inflate(R.menu.search_photos_toolbar_menu, menu);
 
+        // get search manager
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
+        // set up searchview
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         searchView.setIconifiedByDefault(false);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -90,44 +86,29 @@ public class SearchPhotos extends AppCompatActivity {
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
-                        // Do something when collapsed
+
+                        // on collapse display all photos
                         displayAllPhotos();
-                        return true; // Return true to collapse action view
+                        return true;
                     }
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
-                        // Do something when expanded
-                        return true; // Return true to expand action view
+                        return true;
                     }
                 });
-
 
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                System.out.println("Search button pressed");
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.locationRadioButton:
-                if (checked)
-                    tagType = true;
+                tagType = true;
                 break;
             case R.id.personRadioButton:
-                if (checked)
-                    tagType = false;
+                tagType = false;
                 break;
         }
     }
@@ -150,8 +131,10 @@ public class SearchPhotos extends AppCompatActivity {
 
     private void search(String tag) {
 
-        Album temp = new Album("temp");
+        // create album for search results
+        Album temp = new Album("tempAlbum");
 
+        // add photos to album according to query
         for (Photo p: AlbumList.user.allPhotos.getPhotos()) {
             if (tagType) {
                 for (String s: p.locationTags) {
@@ -170,6 +153,7 @@ public class SearchPhotos extends AppCompatActivity {
             }
         }
 
+        // display all photos
         myImgAdapter = new ImageAdapter(this, temp);
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(myImgAdapter);

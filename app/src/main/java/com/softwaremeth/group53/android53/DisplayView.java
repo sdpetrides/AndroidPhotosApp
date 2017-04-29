@@ -7,24 +7,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
-
-import java.util.ArrayList;
 
 public class DisplayView extends AppCompatActivity {
 
@@ -44,7 +36,7 @@ public class DisplayView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.diplay_view);
+        setContentView(R.layout.display_view);
 
         // verify permissions
         verifyStoragePermissions(this);
@@ -82,6 +74,16 @@ public class DisplayView extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+
+        super.onStart();
+        getDelegate().onStart();
+
+        // populate listView
+        updateTagsListView();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.display_view_toolbar_menu, menu);
         return true;
@@ -104,8 +106,8 @@ public class DisplayView extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
+        // populate listview
         updateTagsListView();
-
         return;
     }
 
@@ -121,6 +123,28 @@ public class DisplayView extends AppCompatActivity {
 
     private void loadSlideshow() {
 
+        // create intent
+        Intent intent = new Intent(this, SlideshowView.class);
+
+        // start AlbumView activity
+        startActivity(intent);
+
+    }
+
+    private void updateTagsListView() {
+
+        ArrayAdapter<String> locationAdapter;
+        ArrayAdapter<String> personAdapter;
+
+        // populate listView with albumNames
+        locationAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.locationTags);
+        personAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.personTags);
+        locationListView.setAdapter(locationAdapter);
+        personListView.setAdapter(personAdapter);
+
+        // set context menu for listView items
+        registerForContextMenu(locationListView);
+        registerForContextMenu(personListView);
     }
 
     public void verifyStoragePermissions(Activity activity) {
@@ -138,21 +162,5 @@ public class DisplayView extends AppCompatActivity {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
-    }
-
-    private void updateTagsListView() {
-
-        ArrayAdapter<String> locationAdapter;
-        ArrayAdapter<String> personAdapter;
-
-        // populate listView with albumNames
-        locationAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.locationTags);
-        personAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.personTags);
-        locationListView.setAdapter(locationAdapter);
-        personListView.setAdapter(personAdapter);
-
-        // set context menu for listView items
-        registerForContextMenu(locationListView);
-        registerForContextMenu(personListView);
     }
 }

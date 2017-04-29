@@ -42,6 +42,13 @@
                 android:value=".DisplayView">
             </meta-data>
         </activity>
+        <activity android:name=".SlideshowView"
+            android:parentActivityName=".DisplayView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DisplayView">
+            </meta-data>
+        </activity>
         <activity android:name=".AddRenameAlbum"
             android:parentActivityName=".AlbumList">
             <meta-data
