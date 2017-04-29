@@ -2,7 +2,9 @@ package com.softwaremeth.group53.android53;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -51,15 +53,21 @@ public class SearchPhotos extends AppCompatActivity {
         toolbar.setTitle("Search Photos");
         this.setSupportActionBar(toolbar);
 
-        // get gridView and set image adapter
-        myImgAdapter = new ImageAdapter(this, AlbumList.user.allPhotos);
-        gridView = (GridView) findViewById(R.id.grid_view);
-        gridView.setAdapter(myImgAdapter);
+        // Display all photos
+        displayAllPhotos();
+
 
         //
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    private void displayAllPhotos() {
+        // get gridView and set image adapter
+        myImgAdapter = new ImageAdapter(this, AlbumList.user.allPhotos);
+        gridView = (GridView) findViewById(R.id.grid_view);
+        gridView.setAdapter(myImgAdapter);
     }
 
     /* OPTIONS MENU */
@@ -76,6 +84,23 @@ public class SearchPhotos extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setIconifiedByDefault(false);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(searchItem,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // Do something when collapsed
+                        displayAllPhotos();
+                        return true; // Return true to collapse action view
+                    }
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        // Do something when expanded
+                        return true; // Return true to expand action view
+                    }
+                });
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -107,6 +132,22 @@ public class SearchPhotos extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query =
+                    intent.getStringExtra(SearchManager.QUERY);
+            search(query);
+        } else {
+            displayAllPhotos();
+        }
+    }
+
     private void search(String tag) {
 
         Album temp = new Album("temp");
@@ -114,14 +155,14 @@ public class SearchPhotos extends AppCompatActivity {
         for (Photo p: AlbumList.user.allPhotos.getPhotos()) {
             if (tagType) {
                 for (String s: p.locationTags) {
-                    if (s.startsWith(tag)) {
+                    if (s.toLowerCase().startsWith(tag.toLowerCase())) {
                         temp.addPhoto(p);
                         break;
                     }
                 }
             } else {
                 for (String s: p.personTags) {
-                    if (s.startsWith(tag)) {
+                    if (s.toLowerCase().startsWith(tag.toLowerCase())) {
                         temp.addPhoto(p);
                         break;
                     }

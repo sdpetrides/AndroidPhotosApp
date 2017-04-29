@@ -6,12 +6,17 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -21,9 +26,9 @@ public class DetailsView extends AppCompatActivity {
 
     Photo photo;
 
-    ArrayAdapter<String> adapter;
-
-    private ListView listView;
+    private ListView locationListView;
+    private ListView personListView;
+    private Spinner albumSpinner;
 
     //true = location; false = person
     Boolean tagType;
@@ -40,7 +45,13 @@ public class DetailsView extends AppCompatActivity {
         photo = AlbumList.user.currentPhoto;
 
         // get listView
-        listView = (ListView) findViewById(R.id.tags_list);
+        locationListView = (ListView) findViewById(R.id.location_tags_list);
+        personListView = (ListView) findViewById(R.id.person_tags_list);
+
+        // Create and populate spinner
+        albumSpinner = (Spinner) findViewById(R.id.albumSpinner);
+        ArrayAdapter<Album> spinnerAdapter = new ArrayAdapter<Album>(this, android.R.layout.simple_spinner_dropdown_item, AlbumList.user.albums);
+        albumSpinner.setAdapter(spinnerAdapter);
 
         // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -64,15 +75,19 @@ public class DetailsView extends AppCompatActivity {
     public void add(View view) {
 
         String newTag = textView.getText().toString();
+        if (newTag == null || newTag.trim().length() == 0) {
+            textView.getText().clear();
+            return;
+        }
 
         if (tagType) {
-            if (photo.locationTags.contains(newTag)) {
+            if (containsCaseInsensitive(newTag, photo.locationTags)) {
                 return;
             } else {
                 photo.locationTags.add(newTag);
             }
         } else {
-            if (photo.personTags.contains(newTag)) {
+            if (containsCaseInsensitive(newTag, photo.personTags)) {
                 return;
             } else {
                 photo.personTags.add(newTag);
@@ -85,8 +100,18 @@ public class DetailsView extends AppCompatActivity {
         updateTagsListView();
 
         setResult(RESULT_OK, null);
+        textView.getText().clear();
         //finish();
 
+    }
+
+    private boolean containsCaseInsensitive(String str, ArrayList<String> list) {
+        for (String s: list) {
+            if (s.equalsIgnoreCase(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void onRadioButtonClicked(View view) {
@@ -108,17 +133,72 @@ public class DetailsView extends AppCompatActivity {
 
     private void updateTagsListView() {
 
-        ArrayList<String> combine = new ArrayList<String>();
-
-        combine.addAll(photo.locationTags);
-        combine.addAll(photo.personTags);
-
+        ArrayAdapter<String> locationAdapter;
+        ArrayAdapter<String> personAdapter;
 
         // populate listView with albumNames
-        adapter = new ArrayAdapter<String>(this, R.layout.album_cell, combine);
-        listView.setAdapter(adapter);
+        locationAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.locationTags);
+        personAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.personTags);
+        locationListView.setAdapter(locationAdapter);
+        personListView.setAdapter(personAdapter);
 
         // set context menu for listView items
-        registerForContextMenu(listView);
+        registerForContextMenu(locationListView);
+        registerForContextMenu(personListView);
+    }
+
+    /* CONTEXT MENU */
+
+    @Override
+    public void onCreateContextMenu(
+            ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.photo_list_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.remove:
+                deleteTag(info);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void deleteTag(AdapterView.AdapterContextMenuInfo info) {
+
+        System.out.println("info:" + info.targetView.getId());
+        System.out.println("info parent:" + ((ListView)info.targetView.getParent()).getId());
+        System.out.println("location:" + locationListView.getId());
+        System.out.println("person:" + personListView.getId());
+
+        // remove tag
+        if (((ListView)info.targetView.getParent()).getId() == locationListView.getId()) {
+            photo.locationTags.remove(info.position);
+        } else {
+            photo.personTags.remove(info.position);
+        }
+
+        // save state
+        AlbumList.user.saveState(this);
+
+        // update listview
+        updateTagsListView();
+    }
+
+    public void moveTo(View view) {
+
+        Album target = (Album)albumSpinner.getSelectedItem();
+
+        target.addPhoto(photo);
+
+        AlbumList.user.currentAlbum.getPhotos().remove(photo);
+
+        AlbumList.user.saveState(this);
     }
 }

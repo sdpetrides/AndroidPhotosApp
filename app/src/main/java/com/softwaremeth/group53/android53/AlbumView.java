@@ -132,7 +132,7 @@ public class AlbumView extends AppCompatActivity {
             case R.id.remove:
 
                 // remove picture
-                myImgAdapter.removePicture((int)info.id);
+                myImgAdapter.removePicture(info.position);
 
                 // save state
                 AlbumList.user.saveState(this);

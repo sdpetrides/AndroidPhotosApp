@@ -37,9 +37,8 @@ public class DisplayView extends AppCompatActivity {
 
     Photo photo;
 
-    ArrayAdapter<String> adapter;
-
-    private ListView listView;
+    private ListView locationListView;
+    private ListView personListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,8 @@ public class DisplayView extends AppCompatActivity {
         String path = photo.getPath();
 
         // get listView
-        listView = (ListView) findViewById(R.id.tags_list);
+        locationListView = (ListView) findViewById(R.id.location_tags_list);
+        personListView = (ListView) findViewById(R.id.person_tags_list);
 
         // set toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -104,10 +104,7 @@ public class DisplayView extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
-
-
-        // save state
-        AlbumList.user.saveState(this);
+        updateTagsListView();
 
         return;
     }
@@ -145,17 +142,17 @@ public class DisplayView extends AppCompatActivity {
 
     private void updateTagsListView() {
 
-        ArrayList<String> combine = new ArrayList<String>();
-
-        combine.addAll(photo.locationTags);
-        combine.addAll(photo.personTags);
-
+        ArrayAdapter<String> locationAdapter;
+        ArrayAdapter<String> personAdapter;
 
         // populate listView with albumNames
-        adapter = new ArrayAdapter<String>(this, R.layout.album_cell, combine);
-        listView.setAdapter(adapter);
+        locationAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.locationTags);
+        personAdapter = new ArrayAdapter<String>(this, R.layout.album_cell, photo.personTags);
+        locationListView.setAdapter(locationAdapter);
+        personListView.setAdapter(personAdapter);
 
         // set context menu for listView items
-        registerForContextMenu(listView);
+        registerForContextMenu(locationListView);
+        registerForContextMenu(personListView);
     }
 }

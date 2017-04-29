@@ -13,41 +13,59 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="0dp">
     <ListView
-        android:id="@+id/tags_list"
-        android:layout_height="250dp"
-        android:layout_width="match_parent" />
+        android:id="@+id/location_tags_list"
+        android:layout_height="200dp"
+        android:layout_width="192dp" />
+    <ListView
+        android:id="@+id/person_tags_list"
+        android:layout_height="200dp"
+        android:layout_width="192dp" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
+
         <EditText
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background"
-            android:maxLines="1"
+            android:imeOptions="actionDone"
             android:inputType="textNoSuggestions"
-            android:imeOptions="actionDone" />
+            android:maxLines="1" />
+
         <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <RadioButton
-            android:id="@+id/locationRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Location"
-            android:checked="true"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton
-            android:id="@+id/personRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Person"
-            android:onClick="onRadioButtonClicked"/>
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/locationRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:onClick="onRadioButtonClicked"
+                android:text="Location"
+                android:layout_marginRight="20dp"/>
+
+            <RadioButton
+                android:id="@+id/personRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onRadioButtonClicked"
+                android:text="Person"
+                android:layout_marginLeft="20dp" />
         </RadioGroup>
 
         <LinearLayout
@@ -56,17 +74,37 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="20dp">
+
             <Button
                 android:id="@+id/text_save"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
                 android:onClick="add"
                 android:text="Add"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/albumSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/moveButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="moveTo"
+            android:text="Move To"
+            android:textSize="16sp"/>
+    </LinearLayout>
 </LinearLayout>

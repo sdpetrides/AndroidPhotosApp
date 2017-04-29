@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class AlbumList extends AppCompatActivity {
 
@@ -167,7 +168,20 @@ public class AlbumList extends AppCompatActivity {
 
     /* MANAGE ALBUMS */
 
+    private boolean containsCaseInsensitive(String str, ArrayList<Album> list) {
+        for (Album a: list) {
+            if (a.getAlbumName().equalsIgnoreCase(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean addAlbum(String newAlbumName) {
+
+        if (containsCaseInsensitive(newAlbumName, user.albums)) {
+            return false;
+        }
 
         // create album
         Album a = new Album(newAlbumName);
@@ -185,6 +199,10 @@ public class AlbumList extends AppCompatActivity {
     }
 
     private boolean renameAlbum(String newAlbumName) {
+
+        if (containsCaseInsensitive(newAlbumName, user.albums)) {
+            return false;
+        }
 
         // get id
         int id = AlbumList.user.albumPos;
@@ -235,6 +253,7 @@ public class AlbumList extends AppCompatActivity {
 
         // put album name in user
         AlbumList.user.albumPos = pos;
+        AlbumList.user.currentAlbum = AlbumList.user.albums.get(pos);
 
         // create intent
         Intent intent = new Intent(this, AlbumView.class);
