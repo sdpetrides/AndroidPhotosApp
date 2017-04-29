@@ -21,14 +21,17 @@
         android:layout_height="300dp"
         android:layout_margin="5dip"
         android:id="@+id/image_view" />
-
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="moveLeft" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="moveRight" />
-
+        android:layout_gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="moveLeft"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="moveRight"/>
+    </LinearLayout>
 </LinearLayout>

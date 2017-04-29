@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 public class SlideshowView extends AppCompatActivity {
@@ -70,27 +71,44 @@ public class SlideshowView extends AppCompatActivity {
         imageView.setImageBitmap(bm);
     }
 
-    public void moveLeft() {
+    public void moveLeft(View view) {
 
         System.out.println("Move left");
 
         // update photo position
+        if (photoPos > 0) {
+            photoPos--;
+        } else {
+            photoPos = currentAlbum.getPhotos().size() - 1;
+        }
+
+        // update current photo
+        AlbumList.user.currentPhoto = currentAlbum.getPhotos().get(photoPos);
 
         // display photo
+        displayPhoto();
 
     }
 
-    private void moveRight() {
+    public void moveRight(View view) {
 
         System.out.println("Move right");
 
+        int lastIndex = currentAlbum.getPhotos().size() - 1;
+
         // update photo position
+        if (photoPos < lastIndex) {
+            photoPos++;
+        } else {
+            photoPos = 0;
+        }
+
+        // update current photo
+        AlbumList.user.currentPhoto = currentAlbum.getPhotos().get(photoPos);
 
         // display photo
-
+        displayPhoto();
     }
-
-
 
     public void verifyStoragePermissions(Activity activity) {
 
