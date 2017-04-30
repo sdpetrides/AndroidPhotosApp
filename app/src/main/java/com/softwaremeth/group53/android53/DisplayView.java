@@ -1,6 +1,5 @@
 package com.softwaremeth.group53.android53;
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -108,6 +107,7 @@ public class DisplayView extends AppCompatActivity {
 
         // populate listview
         updateTagsListView();
+
         return;
     }
 

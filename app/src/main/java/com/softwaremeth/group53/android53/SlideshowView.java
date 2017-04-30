@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -31,6 +32,10 @@ public class SlideshowView extends AppCompatActivity {
 
     private ImageView imageView;
 
+    private ImageView leftImageView;
+    private ImageView rightImageView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,10 +61,23 @@ public class SlideshowView extends AppCompatActivity {
         // get imageview
         imageView = (ImageView) findViewById(R.id.image_view);
 
+        // set arrow buttons
+        setArrowButtons();
+
         // display photo
         displayPhoto();
     }
 
+    private void setArrowButtons() {
+
+        // get imageviews
+        leftImageView = (ImageView) findViewById(R.id.left_button);
+        rightImageView = (ImageView) findViewById(R.id.right_button);
+
+        // set image resources
+        leftImageView.setImageResource(R.drawable.ic_arrow_back_white_24dp);
+        rightImageView.setImageResource(R.drawable.ic_arrow_forward_white_24dp);
+    }
 
 
     public void displayPhoto() {
@@ -72,8 +90,6 @@ public class SlideshowView extends AppCompatActivity {
     }
 
     public void moveLeft(View view) {
-
-        System.out.println("Move left");
 
         // update photo position
         if (photoPos > 0) {
@@ -91,8 +107,6 @@ public class SlideshowView extends AppCompatActivity {
     }
 
     public void moveRight(View view) {
-
-        System.out.println("Move right");
 
         int lastIndex = currentAlbum.getPhotos().size() - 1;
 

@@ -1,34 +1,18 @@
 package com.softwaremeth.group53.android53;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class AlbumList extends AppCompatActivity {
@@ -170,20 +154,7 @@ public class AlbumList extends AppCompatActivity {
 
     /* MANAGE ALBUMS */
 
-    private boolean containsCaseInsensitive(String str, ArrayList<Album> list) {
-        for (Album a: list) {
-            if (a.getAlbumName().equalsIgnoreCase(str)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean addAlbum(String newAlbumName) {
-
-        if (containsCaseInsensitive(newAlbumName, user.albums)) {
-            return false;
-        }
 
         // create album
         Album a = new Album(newAlbumName);
@@ -201,10 +172,6 @@ public class AlbumList extends AppCompatActivity {
     }
 
     private boolean renameAlbum(String newAlbumName) {
-
-        if (containsCaseInsensitive(newAlbumName, user.albums)) {
-            return false;
-        }
 
         // get id
         int id = AlbumList.user.albumPos;

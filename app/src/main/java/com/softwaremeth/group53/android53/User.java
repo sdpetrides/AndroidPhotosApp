@@ -2,7 +2,6 @@ package com.softwaremeth.group53.android53;
 
 import android.content.Context;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +26,6 @@ public class User implements Serializable {
     public int photoPos;
 
     public String currentAlbumName;
-    public String currentPhotoPath; // may not need
 
     public User() {
         this.albums = new ArrayList<Album>();
@@ -37,7 +35,6 @@ public class User implements Serializable {
         this.albumPos = -1;
         this.photoPos = -1;
         this.currentAlbumName = null;
-        this.currentPhotoPath = null;
     }
 
     public String[] getAlbumsArray() {

@@ -1,7 +1,5 @@
 package com.softwaremeth.group53.android53;
 
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +28,9 @@ public class DetailsView extends AppCompatActivity {
     private ListView personListView;
     private Spinner albumSpinner;
 
-    //true = location; false = person
-    Boolean tagType;
+    boolean tagType;
+        // true = location
+        // false = person
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,8 @@ public class DetailsView extends AppCompatActivity {
 
         // Create and populate spinner
         albumSpinner = (Spinner) findViewById(R.id.albumSpinner);
-        ArrayAdapter<Album> spinnerAdapter = new ArrayAdapter<Album>(this, android.R.layout.simple_spinner_dropdown_item, AlbumList.user.albums);
+        ArrayAdapter<Album> spinnerAdapter = new ArrayAdapter<Album>(this,
+                android.R.layout.simple_spinner_dropdown_item, AlbumList.user.albums);
         albumSpinner.setAdapter(spinnerAdapter);
 
         // set toolbar
@@ -69,17 +69,20 @@ public class DetailsView extends AppCompatActivity {
         updateTagsListView();
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
     }
 
     public void add(View view) {
 
+        // get new tag string
         String newTag = textView.getText().toString();
+
+        // check if tag is not empty
         if (newTag == null || newTag.trim().length() == 0) {
             textView.getText().clear();
             return;
         }
 
+        // add tag to correct arraylist
         if (tagType) {
             if (containsCaseInsensitive(newTag, photo.locationTags)) {
                 return;
@@ -97,12 +100,11 @@ public class DetailsView extends AppCompatActivity {
         // save state
         AlbumList.user.saveState(this);
 
+        // update tags and clear textview
         updateTagsListView();
+        textView.getText().clear();
 
         setResult(RESULT_OK, null);
-        textView.getText().clear();
-        //finish();
-
     }
 
     private boolean containsCaseInsensitive(String str, ArrayList<String> list) {
@@ -115,7 +117,7 @@ public class DetailsView extends AppCompatActivity {
     }
 
     public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
+
         boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
@@ -172,11 +174,6 @@ public class DetailsView extends AppCompatActivity {
 
     private void deleteTag(AdapterView.AdapterContextMenuInfo info) {
 
-        System.out.println("info:" + info.targetView.getId());
-        System.out.println("info parent:" + ((ListView)info.targetView.getParent()).getId());
-        System.out.println("location:" + locationListView.getId());
-        System.out.println("person:" + personListView.getId());
-
         // remove tag
         if (((ListView)info.targetView.getParent()).getId() == locationListView.getId()) {
             photo.locationTags.remove(info.position);
@@ -193,12 +190,16 @@ public class DetailsView extends AppCompatActivity {
 
     public void moveTo(View view) {
 
+        // get target album
         Album target = (Album)albumSpinner.getSelectedItem();
 
+        // add photo to target ablum
         target.addPhoto(photo);
 
+        // remove photo from current album
         AlbumList.user.currentAlbum.getPhotos().remove(photo);
 
+        // save state
         AlbumList.user.saveState(this);
     }
 }

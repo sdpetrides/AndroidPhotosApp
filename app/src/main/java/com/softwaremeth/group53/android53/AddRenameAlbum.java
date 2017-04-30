@@ -1,5 +1,6 @@
 package com.softwaremeth.group53.android53;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -7,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+
+import java.util.ArrayList;
 
 public class AddRenameAlbum extends AppCompatActivity {
 
@@ -51,7 +54,25 @@ public class AddRenameAlbum extends AppCompatActivity {
         // get new name from xml
         String name = albumNameTextView.getText().toString();
 
-        // TODO: alert dialog
+        // check if name is empty
+        if (name == null || name.length() == 0) {
+
+            Bundle bundle = new Bundle();
+            bundle.putString(AlbumDialogFragment.MESSAGE_KEY, "Album name cannot be empty");
+            setDialogFragment(bundle);
+
+            return;
+        }
+
+        // check if name exists
+        if (containsCaseInsensitive(name, AlbumList.user.albums)) {
+
+            Bundle bundle = new Bundle();
+            bundle.putString(AlbumDialogFragment.MESSAGE_KEY, "Album name already exists");
+            setDialogFragment(bundle);
+
+            return;
+        }
 
         // create bundle and add new name to bundle
         Bundle bundle = new Bundle();
@@ -65,8 +86,23 @@ public class AddRenameAlbum extends AppCompatActivity {
         finish();
     }
 
+    private void setDialogFragment(Bundle bundle) {
+        DialogFragment newFragment = new AlbumDialogFragment();
+        newFragment.setArguments(bundle);
+        newFragment.show(getFragmentManager(), "badfields");
+    }
+
     public void cancel(View view) {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    private boolean containsCaseInsensitive(String str, ArrayList<Album> list) {
+        for (Album a: list) {
+            if (a.getAlbumName().equalsIgnoreCase(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
