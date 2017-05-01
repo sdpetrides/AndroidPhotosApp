@@ -2,6 +2,8 @@ package com.softwaremeth.group53.android53;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -57,6 +59,20 @@ public class SlideshowView extends AppCompatActivity {
         // get current album and photo position
         currentAlbum = AlbumList.user.currentAlbum;
         photoPos = AlbumList.user.photoPos;
+
+        if (currentAlbum.getNumPhotos() < 1) {
+
+            // set flag
+            AlbumView.noPhotoSlideshowFlag = true;
+
+            // create intent
+            Intent intent = new Intent(this, AlbumView.class);
+
+            // start AlbumView activity
+            startActivity(intent);
+
+            return;
+        }
 
         // get imageview
         imageView = (ImageView) findViewById(R.id.image_view);

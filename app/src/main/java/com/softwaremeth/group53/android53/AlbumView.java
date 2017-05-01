@@ -2,6 +2,7 @@ package com.softwaremeth.group53.android53;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -39,6 +40,8 @@ public class AlbumView extends AppCompatActivity {
 
     public ImageAdapter myImgAdapter;
 
+    public static boolean noPhotoSlideshowFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,6 +63,18 @@ public class AlbumView extends AppCompatActivity {
         // set action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        if (noPhotoSlideshowFlag) {
+
+            noPhotoSlideshowFlag = false;
+
+            Bundle bundle = new Bundle();
+            bundle.putString(AlbumDialogFragment.MESSAGE_KEY,
+                    "No photos in album, cannot enter slideshow");
+            setDialogFragment(bundle);
+
+
+        }
 
         // get gridView and set image adapter
         myImgAdapter = new ImageAdapter(this, AlbumList.user.albums.get(albumPos));
@@ -190,6 +205,12 @@ public class AlbumView extends AppCompatActivity {
 
         // start AlbumView activity
         startActivity(intent);
+    }
+
+    private void setDialogFragment(Bundle bundle) {
+        DialogFragment newFragment = new AlbumDialogFragment();
+        newFragment.setArguments(bundle);
+        newFragment.show(getFragmentManager(), "badfields");
     }
 
     public void verifyStoragePermissions(Activity activity) {

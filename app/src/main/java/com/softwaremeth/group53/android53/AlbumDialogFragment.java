@@ -27,6 +27,4 @@ public class AlbumDialogFragment extends DialogFragment {
 
         return builder.create();
     }
-
-
 }

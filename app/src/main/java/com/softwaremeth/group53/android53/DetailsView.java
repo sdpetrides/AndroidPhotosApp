@@ -1,5 +1,6 @@
 package com.softwaremeth.group53.android53;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -201,5 +202,15 @@ public class DetailsView extends AppCompatActivity {
 
         // save state
         AlbumList.user.saveState(this);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(AlbumDialogFragment.MESSAGE_KEY, "Photo has been moved");
+        setDialogFragment(bundle);
+    }
+
+    private void setDialogFragment(Bundle bundle) {
+        DialogFragment newFragment = new AlbumDialogFragment();
+        newFragment.setArguments(bundle);
+        newFragment.show(getFragmentManager(), "badfields");
     }
 }
