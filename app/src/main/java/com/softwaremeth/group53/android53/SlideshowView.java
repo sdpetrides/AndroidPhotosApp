@@ -22,7 +22,6 @@ import android.widget.ImageView;
 public class SlideshowView extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static final String DEBUG_TAG = "test";
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
